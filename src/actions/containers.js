@@ -14,8 +14,9 @@ function buildBytestream(data) {
   const bytestream = {};
   bytestream.id = data.id;
   bytestream.name = data.attributes.name;
-  bytestream.media_type = data.attributes.media_type;
   bytestream.size = data.attributes.size;
+  bytestream.mediaType = data.attributes.media_type;
+  bytestream.uri = data.attributes.uri;
 
   return bytestream;
 }

@@ -93,7 +93,6 @@ class ResourceTree extends React.Component {
             this.props.container.bytestreams.map(child => (
               <ResourceNode
                 key={child.id}
-                label={child.name}
                 bytestream={child}
                 selected={this.state.selected}
                 dispatch={this.props.dispatch}

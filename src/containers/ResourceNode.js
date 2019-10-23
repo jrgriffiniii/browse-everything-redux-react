@@ -33,8 +33,12 @@ class ResourceNode extends React.Component {
 
   render() {
     return (
-      <div className={this.props.classes.root}>
+      <input-bytestream
+        classes={this.props.classes.root}
+        name={this.props.bytestream.name}
+      >
         <Checkbox
+          slot="checkbox"
           checked={this.state.selected}
           onChange={this.handleChecked}
           value="selected"
@@ -43,12 +47,10 @@ class ResourceNode extends React.Component {
           }}
         />
 
-        <IconButton aria-label="expand or collapse" size="small">
+        <IconButton slot="icon" aria-label="expand or collapse" size="small">
           <InsertDriveFileIcon />
         </IconButton>
-
-        <span>{this.props.label}</span>
-      </div>
+      </input-bytestream>
     )
   }
 }
@@ -56,7 +58,6 @@ class ResourceNode extends React.Component {
 ResourceNode.propTypes = {
   classes: PropTypes.object,
   selected: PropTypes.bool,
-  label: PropTypes.string.isRequired,
   bytestream: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired
 }

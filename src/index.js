@@ -4,6 +4,8 @@ import './index.css';
 import * as serviceWorker from './serviceWorker';
 import BrowseEverything from './containers/BrowseEverything';
 
+import { applyPolyfills, defineCustomElements } from './components/dist/loader';
+
 /**
  * This the more proper way of working with the MaterialUI approach for CSS and
  *  theming.  Unfortunately, using this at the the component-level requires
@@ -18,3 +20,7 @@ ReactDOM.render(<BrowseEverything />, document.getElementById('root'))
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
+
+applyPolyfills().then(() => {
+  defineCustomElements(window);
+});
