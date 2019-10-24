@@ -9,7 +9,6 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 
 import SelectProvider from './SelectProvider';
-import AuthButton from './AuthButton';
 import ResourceTree from './ResourceTree';
 import {
   selectProvider,
@@ -247,9 +246,12 @@ class UploadForm extends React.Component {
 
           <Grid item xs={6} className={this.props.classes.grid.item}>
             {this.state.providerSupportsAuth && (
-              <AuthButton
-                handleClick={this.handleClickAuthButton}
-                authorizationUrl={this.props.selectedProvider.authorizationUrl}
+              <Button
+                variant="contained"
+                color="secondary"
+                component="button-auth"
+                onClick={this.handleClickAuthButton}
+                href={this.props.selectedProvider.authorizationUrl}
                 disabled={!!this.props.currentAuthToken.authToken}
               />
             )}
