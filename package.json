@@ -1,6 +1,9 @@
 {
-  "name": "test-redux-react",
-  "version": "0.1.0",
+  "name": "browse-everything-react",
+  "version": "1.0.0.rc1",
+  "description": "Browse Everything user interface in React",
+  "license": "Apache 2",
+  "homepage" : "https://github.com/samvera-labs/browse-everything-redux-react",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.4.2",
@@ -13,13 +16,14 @@
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=3001 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --testPathIgnorePatterns=src/__tests__/testing-helpers.js  --env=jsdom",
     "test:coverage": "react-scripts test --coverage --watchAll=false",
     "eject": "react-scripts eject",
     "lint": "eslint './src/**/*.{js,jsx}'",
-    "lint:fix": "eslint --fix './src/**/*.{js,jsx}'"
+    "lint:fix": "eslint --fix './src/**/*.{js,jsx}'",
+    "transpile": "babel src -d dist --copy-files"
   },
   "eslintConfig": {
     "extends": "react-app"
