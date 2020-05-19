@@ -31,6 +31,9 @@ class UploadForm extends React.Component {
     currentSessionEmpty: true,
     rootContainerEmpty: true,
     currentUploadEmpty: true,
+
+    statusText: 'Authorizing Google Drive...',
+
     oauthToken: null
   }
 
@@ -41,7 +44,12 @@ class UploadForm extends React.Component {
     this.handleAuthorize = this.handleAuthorize.bind(this)
     /** @todo Investigate why <form onSubmit> isn't being dispatched */
     this.handleClickSubmit = this.handleClickSubmit.bind(this)
+
+    this.handleGoogleAuthError = this.handleGoogleAuthError.bind(this)
+    this.handleGoogleAuthSuccess = this.handleGoogleAuthSuccess.bind(this)
+    this.handleGoogleAuthResponse = this.handleGoogleAuthResponse.bind(this)
     this.requestGoogleAuth = this.requestGoogleAuth.bind(this)
+
     this.clearSession = this.clearSession.bind(this)
   }
 
@@ -81,46 +89,88 @@ class UploadForm extends React.Component {
     this.props.dispatch(selectProvider(provider))
   }
 
-  requestGoogleAuth() {
-    const initialized = window.gapi.auth2.init({
-      client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID
-    })
+  handleGoogleAuthError(error) {
+    const errorMessage = "Error encountered when trying to authenticate"
 
-    initialized.then(googleAuth => {
-      let authenticated
+    console.log('TRACE2')
+    console.error(errorMessage)
+    console.error(error)
+    this.setState({ statusText: errorMessage })
+
+    this.clearSession()
+  }
+
+  handleGoogleAuthSuccess(result) {
+    const authResponse = result.getAuthResponse(true)
+
+    if (authResponse) {
+      if (authResponse.error) {
+        const errorMessage = "Error authenticating with Google. Please contact an administrator."
+
+        console.log('TRACE3')
+        console.error(errorMessage)
+        console.error(authResponse.error)
+        this.setState({ statusText: errorMessage })
+
+        this.clearSession()
+      } else {
+        // This might actually be a Google API bug
+
+        console.log('TRACE')
+        console.log(authResponse)
+
+        const oauthToken = authResponse.access_token || result.uc.access_token
+        if (oauthToken) {
+          this.setState({ oauthToken })
+          this.props.dispatch(
+            createClientAuthorization(this.state.oauthToken)
+          )
+
+          //window.gapi.load('picker', this.handlePickerApiLoad)
+        } else {
+          const errorMessage = "Failed to retrieve the OAuth2 token from the Google API response."
+          console.error(errorMessage)
+          console.error(authResponse)
+          this.setState({ statusText: errorMessage })
+
+          this.clearSession()
+        }
+      }
+    }
+  }
+
+  handleGoogleAuthResponse(googleAuth) {
+    let authenticated
+
+    try {
       authenticated = googleAuth.signIn({
         scope: process.env.REACT_APP_GOOGLE_SCOPE
       })
+      authenticated.then(this.handleGoogleAuthSuccess, this.handleGoogleAuthError)
+    } catch (error) {
+      const errorMessage = "Error initiating the authentication handshake with Google. Has the administrator set the appropriate Google access scope?"
+      console.error(errorMessage)
+      console.error(error)
+      this.setState({ statusText: errorMessage })
+    }
+  }
 
-      authenticated.then(
-        result => {
-          const authResponse = result.getAuthResponse(true)
+  requestGoogleAuth() {
+    console.log(`track api ${(new Date()).getTime()}`)
 
-          if (authResponse) {
-            if (authResponse.error) {
-              console.error(authResponse.error)
-              this.clearSession()
-            } else {
-              // This might actually be a Google API bug
-              const oauthToken = authResponse.access_token || result.uc.access_token
-              if (oauthToken) {
-                this.setState({ oauthToken })
-                this.props.dispatch(
-                  createClientAuthorization(this.state.oauthToken)
-                )
-              } else {
-                console.error('Failed to retrieve the OAuth2 token from the Google API response.')
-                console.error(authResponse)
-                this.clearSession()
-              }
-            }
-          }
-        },
-        error => {
-          this.clearSession()
-        }
-      )
-    })
+    try {
+      const initialized = window.gapi.auth2.init({
+        client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID
+      })
+
+      initialized.then(this.handleGoogleAuthResponse)
+    } catch (error) {
+      const errorMessage = "Error initiating the authentication handshake with Google. Has the administrator properly configured the Google client ID?"
+      console.error(errorMessage)
+      console.error(error)
+      this.setState({ statusText: errorMessage })
+      console.log(this.state.statusText)
+    }
   }
 
   /**
@@ -293,15 +343,22 @@ class UploadForm extends React.Component {
 
     if (renderResourceTree) {
       if (this.googlePickerApi) {
+        /*
         let innerText = 'Authorizing Google Drive...'
         if (this.props.currentUpload.isRequesting) {
           innerText = 'Uploading files...'
         }
+        */
+
+        if (this.props.currentUpload.isRequesting) {
+          this.setState({ statusText: 'Uploading files...' })
+        }
+        console.log( this.state.statusText )
 
         resourceTree = (
           <GooglePickerTree
             className={this.props.classes.resourceTree}
-            innerText={innerText}
+            statusText={this.state.statusText}
             dispatch={this.props.dispatch}
             clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
             developerKey={process.env.REACT_APP_GOOGLE_DEVELOPER_KEY}

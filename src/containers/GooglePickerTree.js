@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import load from 'load-script'
 
 import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
@@ -18,6 +17,7 @@ class GooglePickerTree extends React.Component {
     this.buildPicker = this.buildPicker.bind(this)
     this.handlePickerApiLoad = this.handlePickerApiLoad.bind(this)
     this.handleApiLoad = this.handleApiLoad.bind(this)
+    this.handleOnLoad = this.handleOnLoad.bind(this)
 
     this.state = {
       pickerApiLoaded: false,
@@ -75,7 +75,11 @@ class GooglePickerTree extends React.Component {
   }
 
   buildPicker() {
-    if (this.state.pickerApiLoaded && this.props.oauthToken) {
+    if (!this.props.oauthToken) {
+      throw new Error('Fatal: Cannot build the Picker component without an OAuth Token from the Google API')
+    }
+
+    if (this.state.pickerApiLoaded) {
       const view = new window.google.picker.DocsView()
         .setIncludeFolders(true)
         .setSelectFolderEnabled(true)
@@ -85,6 +89,7 @@ class GooglePickerTree extends React.Component {
       const picker = new window.google.picker.PickerBuilder()
         .enableFeature(window.google.picker.Feature.SUPPORT_DRIVES)
         .enableFeature(window.google.picker.Feature.MULTISELECT_ENABLED)
+        .setOrigin('http://localhost:3000')
         .addView(view)
         .setOAuthToken(this.props.oauthToken)
         .setDeveloperKey(this.props.developerKey)
@@ -96,8 +101,10 @@ class GooglePickerTree extends React.Component {
   }
 
   handlePickerApiLoad() {
+    console.log(`trace picker: ${(new Date()).getTime()}`)
     this.setState({ pickerApiLoaded: true })
-    this.buildPicker()
+    // This should not be build until after the oauthToken is updated
+    //this.buildPicker()
   }
 
   handleApiLoad() {
@@ -111,12 +118,55 @@ class GooglePickerTree extends React.Component {
     return !!window.gapi
   }
 
+  handleOnLoad(script, callback) {
+      script.onerror = script.onload = null
+      callback()
+  }
+
+  handleIeOnLoad() {}
+
   componentDidMount() {
-    if (this.googleLoaded) {
-      this.handleApiLoad()
-    } else if (!this.state.loadingScript) {
+    if (!this.state.loadingScript) {
+      //this.handleApiLoad()
       this.setState({ loadingScript: true })
-      load(GOOGLE_SDK_URL, this.handleApiLoad)
+      // This is one area which is potentially problematic
+      //load(GOOGLE_SDK_URL, this.handleApiLoad)
+
+      const script = window.document.createElement('script')
+      script.type = 'text/javascript'
+      script.charset = 'utf8'
+      script.async = true
+
+      // const onLoad = 'onload' in script ? this.handleOnLoad : this.handleIeOnLoad
+      const onLoad = this.handleOnLoad
+
+      script.onload = event => {
+        onLoad( event.target, this.handleApiLoad )
+      }
+
+      if (!script.onload) {
+        console.log('Script does not have an onload callback')
+        // onLoad( script, this.handleApiLoad )
+      }
+
+      window.document.body.appendChild(script)
+      script.src = GOOGLE_SDK_URL
+
+/*
+script.onerror = error => {
+      console.log(error)
+    }
+
+    // Handling for Internet Explorer
+    script.onreadystatechange = () => {
+      if (script.readyState != 'complete' && script.readyState != 'loaded') return
+
+      script.onreadystatechange = null
+      callback()
+    }
+*/
+
+      console.log("TRACE B")
     }
   }
 
@@ -137,7 +187,7 @@ class GooglePickerTree extends React.Component {
           variant="body1"
           component="div"
         >
-         {this.props.innerText}
+         {this.props.statusText}
         </Typography>
       </div>
     )
@@ -146,7 +196,7 @@ class GooglePickerTree extends React.Component {
 
 GooglePickerTree.propTypes = {
   classes: PropTypes.object.isRequired,
-  innerText: PropTypes.string,
+  statusText: PropTypes.string,
   dispatch: PropTypes.func.isRequired,
 
   developerKey: PropTypes.string.isRequired,

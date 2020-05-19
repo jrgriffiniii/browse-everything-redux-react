@@ -62,12 +62,20 @@ function receiveClientAuthorization(response, oauthToken) {
   return (dispatch, getState) => {
     // Here the auth. is not extracted from the HTTP response
     const authToken = response.authToken
-    const webToken = jwt.verify(authToken, process.env.REACT_APP_SECRET, { algorithms: ['HS256'] })
-    // This does come with problems from the API
-    // Without updating the Authorization, the token cannot be passed to the API
-    // Updating the Authorization is a bit of a security risk, but I suppose that this is the case for any Authorization
-    // IDs (we just don't let clients retrieve an #index of all Authorizations)
-    const updated = { id: webToken.data.id, code: oauthToken }
+    let updated
+
+    try {
+      const webToken = jwt.verify(authToken, process.env.REACT_APP_SECRET, { algorithms: ['HS256'] })
+      // This does come with problems from the API
+      // Without updating the Authorization, the token cannot be passed to the API
+      // Updating the Authorization is a bit of a security risk, but I suppose that this is the case for any Authorization
+      // IDs (we just don't let clients retrieve an #index of all Authorizations)
+      updated = { id: webToken.data.id, code: oauthToken }
+    } catch (error) {
+      console.error("Failed to authenticate using the JSON Web Token. Please see the README for configuring server-side authorization.")
+      console.log(error)
+    }
+
     dispatch(updateAuthorization(updated))
 
     return {

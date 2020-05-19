@@ -1,4 +1,4 @@
-# BrowseEverything Redux/
+# BrowseEverything React
 _A [React](https://reactjs.org/) and [Redux](https://redux.js.org/) user interface implementation for the [BrowseEverything Core Component](https://github.com/samvera/browse-everything)_
 
 [![CircleCI](https://circleci.com/gh/samvera-labs/browse-everything-redux-react.svg?style=svg)](https://circleci.com/gh/samvera-labs/browse-everything-redux-react)
@@ -40,7 +40,7 @@ You will also see any lint errors in the console.
 `yarn lint` or `npm lint`
 
 ### Running the Test Suites
-`npm test`
+`yarn test` or `npm test`
 
 Launches the test runner in the interactive watch mode.<br>
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
