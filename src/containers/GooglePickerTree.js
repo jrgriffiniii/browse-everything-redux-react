@@ -7,7 +7,8 @@ import Typography from '@material-ui/core/Typography'
 import { selectContainerForUpload, selectBytestreamForUpload } from '../actions'
 
 // Are class constants supported in ES yet?
-const GOOGLE_SDK_URL = 'https://apis.google.com/js/api.js'
+// const GOOGLE_SDK_URL = 'https://apis.google.com/js/api.js'
+const GOOGLE_SDK_URL = '/gapi-beautified.js'
 
 class GooglePickerTree extends React.Component {
   constructor(props) {
@@ -89,7 +90,6 @@ class GooglePickerTree extends React.Component {
       const picker = new window.google.picker.PickerBuilder()
         .enableFeature(window.google.picker.Feature.SUPPORT_DRIVES)
         .enableFeature(window.google.picker.Feature.MULTISELECT_ENABLED)
-        .setOrigin('http://localhost:3000')
         .addView(view)
         .setOAuthToken(this.props.oauthToken)
         .setDeveloperKey(this.props.developerKey)
