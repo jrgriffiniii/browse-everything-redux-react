@@ -24,6 +24,9 @@ import {
   createUpload
 } from '../actions'
 
+//import gapi from '../vendor/gapi.es6.js'
+//import '../vendor/gapi.es5.js'
+
 class UploadForm extends React.Component {
   // This should be refactored
   state = {
@@ -92,9 +95,6 @@ class UploadForm extends React.Component {
   handleGoogleAuthError(error) {
     const errorMessage = "Error encountered when trying to authenticate"
 
-    console.log('TRACE2')
-    console.error(errorMessage)
-    console.error(error)
     this.setState({ statusText: errorMessage })
 
     this.clearSession()
@@ -125,8 +125,6 @@ class UploadForm extends React.Component {
           this.props.dispatch(
             createClientAuthorization(this.state.oauthToken)
           )
-
-          //window.gapi.load('picker', this.handlePickerApiLoad)
         } else {
           const errorMessage = "Failed to retrieve the OAuth2 token from the Google API response."
           console.error(errorMessage)
@@ -366,6 +364,7 @@ class UploadForm extends React.Component {
             handleAuthApiLoad={this.requestGoogleAuth}
             handleSubmit={this.handleClickSubmit}
             handleCancel={this.clearSession}
+            gapi={window.gapi}
           />
         )
       } else {

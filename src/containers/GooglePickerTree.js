@@ -8,7 +8,13 @@ import { selectContainerForUpload, selectBytestreamForUpload } from '../actions'
 
 // Are class constants supported in ES yet?
 // const GOOGLE_SDK_URL = 'https://apis.google.com/js/api.js'
-const GOOGLE_SDK_URL = '/gapi-beautified.js'
+// const GOOGLE_SDK_URL = 'gapi-beautified.js'
+//const GOOGLE_SDK_URL = `${process.env.PUBLIC_URL}/vendor/gapi.js`
+
+//import GoogleSdkUrl from 'vendor/gapi-beautified.js'
+//import GoogleSdkUrl from 'vendor/gapi-beautified.js'
+
+//import gapi from '../vendor/gapi.es6.js'
 
 class GooglePickerTree extends React.Component {
   constructor(props) {
@@ -110,12 +116,12 @@ class GooglePickerTree extends React.Component {
   handleApiLoad() {
     this.setState({ loadingScript: false })
 
-    window.gapi.load('auth2', this.props.handleAuthApiLoad)
-    window.gapi.load('picker', this.handlePickerApiLoad)
+    this.props.gapi.load('auth2', this.props.handleAuthApiLoad)
+    this.props.gapi.load('picker', this.handlePickerApiLoad)
   }
 
   get googleLoaded() {
-    return !!window.gapi
+    return !!this.props.gapi
   }
 
   handleOnLoad(script, callback) {
@@ -127,16 +133,17 @@ class GooglePickerTree extends React.Component {
 
   componentDidMount() {
     if (!this.state.loadingScript) {
-      //this.handleApiLoad()
       this.setState({ loadingScript: true })
-      // This is one area which is potentially problematic
-      //load(GOOGLE_SDK_URL, this.handleApiLoad)
+      this.handleApiLoad()
 
+/*
+      // This needs to be refactored
       const script = window.document.createElement('script')
       script.type = 'text/javascript'
       script.charset = 'utf8'
       script.async = true
 
+      // This is used for IE support
       // const onLoad = 'onload' in script ? this.handleOnLoad : this.handleIeOnLoad
       const onLoad = this.handleOnLoad
 
@@ -144,29 +151,27 @@ class GooglePickerTree extends React.Component {
         onLoad( event.target, this.handleApiLoad )
       }
 
+      // This is necessary for Firefox
       if (!script.onload) {
         console.log('Script does not have an onload callback')
-        // onLoad( script, this.handleApiLoad )
+        onLoad( script, this.handleApiLoad )
       }
 
       window.document.body.appendChild(script)
       script.src = GOOGLE_SDK_URL
 
-/*
-script.onerror = error => {
-      console.log(error)
-    }
+      script.onerror = error => {
+        console.log(error)
+      }
 
-    // Handling for Internet Explorer
-    script.onreadystatechange = () => {
-      if (script.readyState != 'complete' && script.readyState != 'loaded') return
+      // Handling for Internet Explorer
+      script.onreadystatechange = () => {
+        if (script.readyState != 'complete' && script.readyState != 'loaded') return
 
-      script.onreadystatechange = null
-      callback()
-    }
+        script.onreadystatechange = null
+        onLoad()
+      }
 */
-
-      console.log("TRACE B")
     }
   }
 
@@ -205,7 +210,9 @@ GooglePickerTree.propTypes = {
   oauthToken: PropTypes.string,
   handleAuthApiLoad: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
-  handleCancel: PropTypes.func.isRequired
+  handleCancel: PropTypes.func.isRequired,
+
+  gapi: PropTypes.object
 }
 
 GooglePickerTree.defaultProps = {
