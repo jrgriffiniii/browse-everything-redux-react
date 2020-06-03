@@ -89,7 +89,7 @@ jobs:
 
       - run:
           name: Run the React server
-          command: yarn run react-start
+          command: yarn run launch-react-app
 
       - run:
           name: Run the Selenium server

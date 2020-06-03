@@ -27,7 +27,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "react-server": "react-scripts start > react_server.log 2>&1 &",
+    "launch-react-app": "react-scripts start > react_server.log 2>&1 &",
     "build": "react-scripts build",
     "test": "react-scripts test --testPathIgnorePatterns=src/__tests__/testing-helpers.js  --env=jsdom",
     "test:coverage": "react-scripts test --coverage --watchAll=false",
