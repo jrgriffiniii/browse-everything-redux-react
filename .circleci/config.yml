@@ -38,7 +38,7 @@ jobs:
   nightwatch:
     working_directory: ~/be-redux-react
     docker:
-      - image: circleci/node:13.14-browsers
+      - image: circleci/ruby:2.6-stretch-node-browsers-legacy
     steps:
       - checkout
 
