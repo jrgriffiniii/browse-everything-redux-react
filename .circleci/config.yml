@@ -61,6 +61,24 @@ jobs:
           command: yarn run launch-react-app
 
       - run:
+          name: Clone the BrowseEverything app.
+          command: git clone -b 2.x-stable https://github.com/samvera/browse-everything.git
+
+      - run:
+          name: Install Gem dependencies
+          command: bundle install
+
+      - run:
+          name: Generate the server
+          command: bundle exec rake engine_cart:generate
+
+      - run:
+          name: Starting Rails server
+          command: |
+            cd .internal_test_app
+            bundle exec rails s > rails_server.log 2>&1 &
+
+      - run:
           name: Run the Selenium server
           command: yarn run nightwatch
 
