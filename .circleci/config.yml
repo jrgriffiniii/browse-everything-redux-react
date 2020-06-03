@@ -66,16 +66,20 @@ jobs:
 
       - run:
           name: Install Gem dependencies
-          command: bundle install
+          command: |
+            cd browse-everything
+            bundle install
 
       - run:
           name: Generate the server
-          command: bundle exec rake engine_cart:generate
+          command: |
+            cd browse-everything
+            bundle exec rake engine_cart:generate
 
       - run:
           name: Starting Rails server
           command: |
-            cd .internal_test_app
+            cd browse-everything/.internal_test_app
             bundle exec rails s > rails_server.log 2>&1 &
 
       - run:
