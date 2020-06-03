@@ -44,9 +44,8 @@ jobs:
 
       # Restore the dependency cache
       - restore_cache:
-          keys: 
+          keys:
             - v1-dependencies-{{ checksum "package-lock.json" }}
-            - v1-dependencies-
 
       - run:
           name: Install dependencies with NPM
@@ -64,17 +63,37 @@ jobs:
           name: Clone the BrowseEverything app.
           command: git clone -b 2.x-stable https://github.com/samvera/browse-everything.git
 
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "browse-everything/browse-everything.gemspec" }}
+
       - run:
           name: Install Gem dependencies
           command: |
             cd browse-everything
-            bundle install
+            bundle check || bundle install
+
+      - save_cache:
+          key: v1-dependencies-{{ checksum "browse-everything/browse-everything.gemspec" }}
+          paths:
+            - ~/be-redux-react/browse-everything/vendor/bundle
+
+      - restore_cache:
+          name: Restore test app from cache
+          keys:
+            - v1-internal-test-app-{{ checksum ".internal_test_app/Gemfile" }}
 
       - run:
           name: Generate the server
           command: |
             cd browse-everything
-            bundle exec rake engine_cart:generate
+            [ -e ./.internal_test_app ] || bundle exec rake engine_cart:generate
+
+      - save_cache:
+          name: Save the test app from cache
+          key: v1-internal-test-app-{{ checksum ".internal_test_app/Gemfile" }}
+          paths:
+            - ./.internal_test_app
 
       - run:
           name: Starting Rails server
