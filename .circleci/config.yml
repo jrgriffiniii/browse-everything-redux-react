@@ -85,6 +85,14 @@ jobs:
 
       - run:
           name: Run the Selenium server
+          command: yarn run launch-selenium
+
+      - run:
+          name: Run the React server
+          command: yarn run react-start
+
+      - run:
+          name: Run the Selenium server
           command: yarn run nightwatch
 
       # Save the dependency cache
@@ -100,5 +108,4 @@ workflows:
       - build
   e2e:
     jobs:
-      - react_server
       - nightwatch

@@ -27,6 +27,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "react-server": "react-scripts start > react_server.log 2>&1 &",
     "build": "react-scripts build",
     "test": "react-scripts test --testPathIgnorePatterns=src/__tests__/testing-helpers.js  --env=jsdom",
     "test:coverage": "react-scripts test --coverage --watchAll=false",
@@ -36,8 +37,7 @@
     "storybook": "start-storybook",
     "snapshot": "build-storybook && percy-storybook --widths=320,1280",
     "launch-selenium": "java -jar ./node_modules/selenium-server-standalone-jar/jar/selenium-server-standalone-**.jar &",
-    "nightwatch": "node ./node_modules/.bin/nightwatch",
-    "e2e": "npm run launch-selenium"
+    "nightwatch": "node ./node_modules/.bin/nightwatch"
   },
   "eslintConfig": {
     "extends": "react-app"
