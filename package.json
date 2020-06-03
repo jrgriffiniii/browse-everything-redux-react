@@ -8,16 +8,22 @@
   "dependencies": {
     "@material-ui/core": "^4.4.2",
     "@material-ui/icons": "^4.4.3",
+    "chromedriver": "^83.0.0",
+    "dotenv": "^8.2.0",
+    "http-server": "^0.12.3",
     "i18next": "^19.3.2",
     "jsonwebtoken": "^8.5.1",
     "load-script": "^1.0.0",
+    "nightwatch": "^1.3.6",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-i18next": "^11.3.3",
     "react-scripts": "3.1.1",
     "redux": "^4.0.4",
     "redux-bees": "^0.1.11",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "selenium-server": "^3.141.59",
+    "selenium-server-standalone-jar": "^3.141.59"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -26,7 +32,12 @@
     "test:coverage": "react-scripts test --coverage --watchAll=false",
     "eject": "react-scripts eject",
     "lint": "eslint './src/**/*.{js,jsx}'",
-    "lint:fix": "eslint --fix './src/**/*.{js,jsx}'"
+    "lint:fix": "eslint --fix './src/**/*.{js,jsx}'",
+    "storybook": "start-storybook",
+    "snapshot": "build-storybook && percy-storybook --widths=320,1280",
+    "launch-selenium": "java -jar ./node_modules/selenium-server-standalone-jar/jar/selenium-server-standalone-**.jar",
+    "nightwatch": "node ./node_modules/.bin/nightwatch",
+    "e2e": "npm run launch-selenium"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -44,6 +55,9 @@
     ]
   },
   "devDependencies": {
+    "@percy-io/percy-storybook": "^2.1.0",
+    "@percy/nightwatch": "^1.1.0",
+    "@storybook/react": "^5.3.19",
     "@testing-library/jest-dom": "^5.1.1",
     "@testing-library/react": "^9.4.0",
     "babel-loader": "^8.0.6",
