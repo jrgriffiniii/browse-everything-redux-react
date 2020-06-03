@@ -36,6 +36,7 @@
     "lint:fix": "eslint --fix './src/**/*.{js,jsx}'",
     "storybook": "start-storybook",
     "snapshot": "build-storybook && percy-storybook --widths=320,1280",
+    "selenium-server": "java -jar ./node_modules/selenium-server-standalone-jar/jar/selenium-server-standalone-**.jar",
     "launch-selenium": "java -jar ./node_modules/selenium-server-standalone-jar/jar/selenium-server-standalone-**.jar &",
     "nightwatch": "node ./node_modules/.bin/nightwatch"
   },

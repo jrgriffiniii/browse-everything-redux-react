@@ -20,7 +20,7 @@ module.exports = {
     port: 4444,
     cli_args: {
       'webdriver.chrome.driver': chromedriver.path
-    },
+    }
   },
 
   test_settings: {
