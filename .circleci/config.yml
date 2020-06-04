@@ -99,7 +99,7 @@ jobs:
             sed -i "s/GOOGLE_DEVELOPER_KEY/$GOOGLE_DEVELOPER_KEY/g" .env
 
       - run:
-          name: Starting Rails server
+          name: Setting the credentials
           command: |
             sed -i "s/GOOGLE_API_CLIENT_ID/$GOOGLE_CLIENT_ID/g" tests/support/browse_everything_providers.yml
             sed -i "s/GOOGLE_API_CLIENT_SECRET/$GOOGLE_CLIENT_SECRET/g" tests/support/browse_everything_providers.yml
@@ -108,7 +108,8 @@ jobs:
       - run:
           name: Starting Rails server
           command: |
-            bundle exec rails s > rails_server.log 2>&1 &
+            cd browse-everything/.internal_test_app
+            bundle exec rails server > rails_server.log 2>&1 &
 
       - run:
           name: Run the Selenium server
