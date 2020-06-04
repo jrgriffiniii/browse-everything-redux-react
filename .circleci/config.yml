@@ -73,33 +73,23 @@ jobs:
             cd browse-everything
             bundle check || bundle install
 
-      - save_cache:
-          key: v1-dependencies-{{ checksum "browse-everything/browse-everything.gemspec" }}
-          paths:
-            - ~/be-redux-react/browse-everything/vendor/bundle
-
-      - restore_cache:
-          name: Restore test app from cache
-          keys:
-            - v1-internal-test-app-{{ checksum ".internal_test_app/Gemfile" }}
-
       - run:
           name: Generate the server
           command: |
             cd browse-everything
             [ -e ./.internal_test_app ] || bundle exec rake engine_cart:generate
 
-      - save_cache:
-          name: Save the test app from cache
-          key: v1-internal-test-app-{{ checksum ".internal_test_app/Gemfile" }}
-          paths:
-            - ./.internal_test_app
-
       - run:
           name: Set the Rails secret
           command: |
             cp tests/support/master.key browse-everything/.internal_test_app/config/
             cp tests/support/credentials.yml.enc browse-everything/.internal_test_app/config/
+
+      - save_cache:
+          key: v1-dependencies-{{ checksum "browse-everything/browse-everything.gemspec" }}
+          paths:
+            - ~/be-redux-react/browse-everything/vendor/bundle
+            - ~/be-redux-react/browse-everything/.internal_test_app
 
       - run:
           name: Update the ENV configuration file
