@@ -96,9 +96,28 @@ jobs:
             - ./.internal_test_app
 
       - run:
+          name: Set the Rails secret
+          command: |
+            cp tests/support/master.key browse-everything/.internal_test_app/config/
+            cp tests/support/credentials.yml.enc browse-everything/.internal_test_app/config/
+
+      - run:
+          name: Update the ENV configuration file
+          command: |
+            sed -i "s/RAILS_SECRET/$RAILS_SECRET/g" .env
+            sed -i "s/GOOGLE_CLIENT_ID/$GOOGLE_CLIENT_ID/g" .env
+            sed -i "s/GOOGLE_DEVELOPER_KEY/$GOOGLE_DEVELOPER_KEY/g" .env
+
+      - run:
           name: Starting Rails server
           command: |
-            cd browse-everything/.internal_test_app
+            sed -i "s/GOOGLE_API_CLIENT_ID/$GOOGLE_CLIENT_ID/g" tests/support/browse_everything_providers.yml
+            sed -i "s/GOOGLE_API_CLIENT_SECRET/$GOOGLE_CLIENT_SECRET/g" tests/support/browse_everything_providers.yml
+            cp tests/support/browse_everything_providers.yml browse-everything/.internal_test_app
+
+      - run:
+          name: Starting Rails server
+          command: |
             bundle exec rails s > rails_server.log 2>&1 &
 
       - run:
