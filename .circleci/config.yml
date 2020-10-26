@@ -15,7 +15,7 @@ jobs:
             - yarn-lock-
       - run:
           name: Install dependencies with NPM
-          command: npm install
+          command: yarn install
 
       # Save the dependency cache
       - save_cache:
@@ -30,7 +30,7 @@ jobs:
 
       - run:
           name: "Run Jest and Collect Coverage Reports"
-          command: yarn test --collectCoverage=true
+          command: yarn test:coverage
       - store_artifacts:
           path: coverage
 

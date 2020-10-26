@@ -22,8 +22,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --testPathIgnorePatterns=src/__tests__/testing-helpers.js --env=jsdom",
-    "test:coverage": "react-scripts test --testPathIgnorePatterns=src/__tests__/testing-helpers.js --env=jsdom --coverage --watchAll=false",
+    "test": "react-scripts test --testPathIgnorePatterns=src/__tests__/testing-helpers.js --env=jsdom --watchAll=false",
+    "test:watch": "react-scripts test --testPathIgnorePatterns=src/__tests__/testing-helpers.js --env=jsdom",
+    "test:coverage": "react-scripts test --testPathIgnorePatterns=src/__tests__/testing-helpers.js --env=jsdom --watchAll=false --coverage --collectCoverage=true --coveragePathIgnorePatterns='src/(bees|configureStore|index|serviceWorker|types).js' --coveragePathIgnorePatterns=src/__tests__",
     "eject": "react-scripts eject",
     "lint": "eslint './src/**/*.{js,jsx}'",
     "lint:fix": "eslint --fix './src/**/*.{js,jsx}'"
